@@ -1,11 +1,18 @@
-package de.fi.webapp.presentation.controller;
+package de.fi.webapp.presentation.controller.v1;
 
 
 import de.fi.webapp.presentation.dto.PersonDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.RequestScope;
+import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -13,8 +20,29 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/personen")
+@RequestMapping("/v1/personen")
+//@RequestScope
 public class PersonenController {
+
+
+
+    public PersonenController() {
+        System.out.println( "PersonenController erzeugt");
+    }
+
+    @Operation(summary = "Liefert eine Person")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Person gefunden",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = PersonDTO.class)) }),
+            @ApiResponse(responseCode = "400", description = "ungueltige ID",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Person nicht gefunden",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "internal server error",
+                    content = @Content)})
+
+
 
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<PersonDTO> getPerson(@PathVariable UUID id) {
@@ -55,7 +83,7 @@ public class PersonenController {
 
         // Speichern der Person
         personDTO.setId(UUID.randomUUID());
-        UriComponents uriComponents = uriBuilder.path("/personen/{id}").buildAndExpand(personDTO.getId());
+        UriComponents uriComponents = uriBuilder.path("/v1/personen/{id}").buildAndExpand(personDTO.getId());
         return ResponseEntity.created(uriComponents.toUri()).build();
     }
 
