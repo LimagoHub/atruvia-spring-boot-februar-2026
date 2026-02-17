@@ -7,12 +7,17 @@ import de.fi.webapp.service.mapper.PersonMapper;
 import de.fi.webapp.service.model.Person;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(rollbackFor = PersonenServiceException.class,propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
 public class PersonServiceImpl implements PersonService {
 
     private final PersonRepository personRepository;
@@ -30,6 +35,7 @@ public class PersonServiceImpl implements PersonService {
                 happy day -> Person to Repo
 
              */
+
 
 
     @Override
@@ -86,6 +92,7 @@ public class PersonServiceImpl implements PersonService {
         }
     }
 
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     @Override
     public Optional<Person> findeNachId(final UUID id) throws PersonenServiceException{
         try {
