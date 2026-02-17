@@ -18,7 +18,11 @@ public class Demo {
 
     @PostConstruct
     public void postConstruct(){
-        PersonEntity person = PersonEntity.builder().vorname("Max").nachname("Mustermann").id(UUID.randomUUID()).build();
+       /* PersonEntity person = PersonEntity.builder().vorname("John").nachname("Doe").id(UUID.randomUUID()).build();
         personRepository.save(person);
+
+        */
+
+        personRepository.xyz().forEach(System.out::println);
     }
 }
