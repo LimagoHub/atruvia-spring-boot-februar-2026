@@ -2,12 +2,17 @@ package de.fi.webapp.presentation.controller.v1;
 
 
 import de.fi.webapp.presentation.dto.PersonDTO;
+import de.fi.webapp.presentation.mapper.PersonDtoMapper;
+import de.fi.webapp.service.PersonService;
+import de.fi.webapp.service.PersonenServiceException;
+import de.fi.webapp.service.mapper.PersonMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +27,11 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/v1/personen")
 //@RequestScope
+@RequiredArgsConstructor
 public class PersonenController {
 
-
-
-    public PersonenController() {
-        System.out.println( "PersonenController erzeugt");
-    }
+    private final PersonService personService;
+    private final PersonDtoMapper mapper;
 
     @Operation(summary = "Liefert eine Person")
     @ApiResponses(value = {
@@ -45,56 +48,52 @@ public class PersonenController {
 
 
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<PersonDTO> getPerson(@PathVariable UUID id) {
+    public ResponseEntity<PersonDTO> getPerson(@PathVariable UUID id) throws PersonenServiceException{
 
-        if(id.toString().endsWith("1")) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(PersonDTO.builder().id(id).vorname("John").nachname("Doe").build());
+
+        // of nur bei Optionalem Wert
+        return ResponseEntity.of(personService.findeNachId(id).map(mapper::convert));
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Iterable<PersonDTO>> getPersons(
             @RequestParam(required = false, defaultValue = "Fritz") String vorname,
             @RequestParam(required = false, defaultValue = "Schmitt") String nachname
-    ) {
+    ) throws PersonenServiceException{
 
         System.out.println(vorname + " " + nachname);
-        var list = List.of(
-                PersonDTO.builder().id(UUID.randomUUID()).vorname("John").nachname("Doe").build(),
-                PersonDTO.builder().id(UUID.randomUUID()).vorname("John").nachname("Rambo").build(),
-                PersonDTO.builder().id(UUID.randomUUID()).vorname("John").nachname("Wick").build(),
-                PersonDTO.builder().id(UUID.randomUUID()).vorname("John").nachname("McClain").build(),
-                PersonDTO.builder().id(UUID.randomUUID()).vorname("John Boy").nachname("Walton").build()
 
-        );
-
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(mapper.convert(personService.findeAlle()));
     }
+
+
     @DeleteMapping(path= "/{id}")
-    public ResponseEntity<Void> deletePerson(@PathVariable UUID id) {
-        if(id.toString().endsWith("1")) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deletePerson(@PathVariable UUID id) throws PersonenServiceException{
+       if(personService.loesche(id))
+           return ResponseEntity.ok().build();
+       else
+           return ResponseEntity.notFound().build();
+    }
+    @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> save (@Valid @RequestBody  PersonDTO personDTO,  UriComponentsBuilder uriBuilder ) throws PersonenServiceException {
+
+        // Speichern der Person
+        if(personService.speichern(mapper.convert(personDTO))) {
+            UriComponents uriComponents = uriBuilder.path("/v1/personen/{id}").buildAndExpand(personDTO.getId());
+            return ResponseEntity.created(uriComponents.toUri()).build();
         }
         return ResponseEntity.ok().build();
     }
-    @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> save (@Valid @RequestBody  PersonDTO personDTO,  UriComponentsBuilder uriBuilder ) {
-
-        // Speichern der Person
-        personDTO.setId(UUID.randomUUID());
-        UriComponents uriComponents = uriBuilder.path("/v1/personen/{id}").buildAndExpand(personDTO.getId());
-        return ResponseEntity.created(uriComponents.toUri()).build();
-    }
 
     @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> update (@PathVariable UUID id,@Valid @RequestBody  PersonDTO personDTO ) {
+    public ResponseEntity<Void> update (@PathVariable UUID id,@Valid @RequestBody  PersonDTO personDTO ) throws PersonenServiceException{
 
         // Speichern der Person
         if(! id.equals(personDTO.getId())) {
             throw new IllegalArgumentException("upps");
         }
-
-        return ResponseEntity.ok().build();
+        if(personService.aendern(mapper.convert(personDTO)))
+            return ResponseEntity.ok().build();
+        else return ResponseEntity.notFound().build();
     }
 }
