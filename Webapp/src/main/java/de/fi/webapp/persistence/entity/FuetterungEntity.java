@@ -1,6 +1,6 @@
 package de.fi.webapp.persistence.entity;
 
-import jakarta.persistence.Column;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -16,15 +16,14 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "tbl_schweine")
-public class SchweinEntity {
+@Table(name = "tbl_fuetterungen")
+public class FuetterungEntity {
 
     @Id
-    private UUID id;
-
-    @Column(nullable = false, length = 30)
-    private String name;
-
-    @Column(nullable = false)
-    private int gewicht;
+    private UUID eventId;
+    private UUID schweinId;
+    @Builder.Default
+    private int anzahlKartoffeln = 1;
+    @Builder.Default
+    private String state = "Pending";
 }

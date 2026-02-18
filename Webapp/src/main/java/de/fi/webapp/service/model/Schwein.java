@@ -20,6 +20,11 @@ public class Schwein {
     }
 
     public void fuettern() {
-        setGewicht( getGewicht() + 1);
+        try {
+            Thread.sleep(10000);
+            setGewicht( getGewicht() + 1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

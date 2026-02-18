@@ -1,9 +1,12 @@
 package de.fi.webapp.presentation.errorhandler;
 
 
+import de.fi.webapp.service.AlreadyExistsException;
+import de.fi.webapp.service.NotFoundException;
 import de.fi.webapp.service.PersonenServiceException;
 import org.jspecify.annotations.Nullable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.rmi.AlreadyBoundException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -63,5 +67,31 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         // Loggen !!!!!!
         logger.error("Upps", ex);
         return ResponseEntity.internalServerError().body(body);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Object> handleNotFoundException(NotFoundException ex, WebRequest request) {
+
+
+        // Loggen !!!!!!
+        logger.warn("Upps", ex);
+        return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler(AlreadyExistsException.class)
+    public ResponseEntity<Object> handleAlreadyExists(AlreadyExistsException ex, WebRequest request) {
+
+
+        // Loggen !!!!!!
+        logger.warn("Upps", ex);
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ex.getMessage());
+    }
+    @ExceptionHandler(IdMismatchException.class)
+    public ResponseEntity<Object> handleIdMismatchException(IdMismatchException ex, WebRequest request) {
+        // Loggen !!!!!!
+        logger.warn("Upps", ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
     }
 }

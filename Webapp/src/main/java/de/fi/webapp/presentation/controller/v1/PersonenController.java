@@ -5,7 +5,6 @@ import de.fi.webapp.presentation.dto.PersonDTO;
 import de.fi.webapp.presentation.mapper.PersonDtoMapper;
 import de.fi.webapp.service.PersonService;
 import de.fi.webapp.service.PersonenServiceException;
-import de.fi.webapp.service.mapper.PersonMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,12 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.annotation.RequestScope;
-import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
