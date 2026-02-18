@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
+import java.util.Set;
 
 /*
 
@@ -40,5 +41,11 @@ public class PersonConfig {
     @Bean
     public PersonService createPersoneService(final PersonRepository repo, final PersonMapper mapper, @Qualifier("antipathen") final List<String> antipathen) {
         return new PersonServiceImpl(repo, mapper, antipathen);
+    }
+
+
+    @Bean
+    public Set<String> createSet(){
+        return Set.of("A","B","C");
     }
 }

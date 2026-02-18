@@ -11,4 +11,9 @@ public class CalculatorImpl implements Calculator {
     public double substract(double a, double b) {
         return add(a, -b);
     }
+
+    @Override
+    public double multiply(final double a, final double b) {
+        return a * b;
+    }
 }
