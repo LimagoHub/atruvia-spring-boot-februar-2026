@@ -14,12 +14,19 @@ import java.util.logging.Logger;
 public class MyAspect {
 
 
-    @Before("execution(* de.fi.webapp.presentation.controller.v1.PersonenController.*(..))")
+
+
+    @Before("Pointcuts.personenControllerMethod()")
     public void beforeAdvice(JoinPoint joinPoint) {
         log.warn("before advice. Methode = " + joinPoint.getSignature().getName());
     }
 
-    @AfterReturning(value = "execution(* de.fi.webapp.presentation.controller.v1.PersonenController.*(..))",returning = "result")
+    @Before("Pointcuts.personenControllerMethod()")
+    public void beforeAdviceSchweineService(JoinPoint joinPoint) {
+        log.warn("before advice. Methode = " + joinPoint.getSignature().getName());
+    }
+
+    @AfterReturning(value = "Pointcuts.personenControllerMethod()",returning = "result")
     public void afterReturninAdvice(JoinPoint joinPoint, Object result) {
         System.out.println(result);
         log.warn("after returning advice. Methode = " + joinPoint.getSignature().getName());
