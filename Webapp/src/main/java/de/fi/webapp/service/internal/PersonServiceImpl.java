@@ -1,11 +1,13 @@
 package de.fi.webapp.service.internal;
 
 import de.fi.webapp.persistence.repository.PersonRepository;
+import de.fi.webapp.service.BlacklistService;
 import de.fi.webapp.service.PersonService;
 import de.fi.webapp.service.PersonenServiceException;
 import de.fi.webapp.service.mapper.PersonMapper;
 import de.fi.webapp.service.model.Person;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -15,13 +17,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Service
+//@Service
 @RequiredArgsConstructor
-@Transactional(rollbackFor = PersonenServiceException.class,propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
+//@Transactional(rollbackFor = PersonenServiceException.class,propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
 public class PersonServiceImpl implements PersonService {
 
     private final PersonRepository personRepository;
     private final PersonMapper personMapper;
+    //@Qualifier("antipathen")
+    private final List<String> antipathen;
 
     /*
                 person == null -> PSE
@@ -54,7 +58,7 @@ public class PersonServiceImpl implements PersonService {
             if(person.getNachname() == null || person.getNachname().length() < 2)
                 throw new PersonenServiceException("Nachname zu kurz");
 
-            if(person.getVorname().equals("Attila"))
+            if(antipathen.contains(person.getVorname()))
                 throw new PersonenServiceException("Antipath!");
 
             personRepository.save(personMapper.convert(person));
@@ -92,7 +96,7 @@ public class PersonServiceImpl implements PersonService {
         }
     }
 
-    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
+    //@Transactional(isolation = Isolation.READ_UNCOMMITTED)
     @Override
     public Optional<Person> findeNachId(final UUID id) throws PersonenServiceException{
         try {

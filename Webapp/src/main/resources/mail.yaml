@@ -1,0 +1,5 @@
+mail:
+  smtpHost: smtp.irgendwo.de
+  username: Fritz
+  password: geheim
+  protocol: pop3
