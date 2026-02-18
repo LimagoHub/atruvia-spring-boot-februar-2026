@@ -1,5 +1,6 @@
 package de.fi.webapp.service.internal;
 
+import de.fi.webapp.persistence.entity.PersonEntity;
 import de.fi.webapp.persistence.repository.PersonRepository;
 import de.fi.webapp.service.PersonenServiceException;
 import de.fi.webapp.service.mapper.PersonMapper;
@@ -9,6 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,6 +24,9 @@ class PersonServiceImplTest {
 
     @Mock
     private PersonRepository personRepositoryMock;
+
+    @Mock
+    private  List<String> antipathenmock;
 
     @Mock
     private PersonMapper mapperMock;

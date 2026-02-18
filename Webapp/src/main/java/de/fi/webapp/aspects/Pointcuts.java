@@ -6,4 +6,7 @@ public class Pointcuts {
 
     @Pointcut("execution(* de.fi.webapp.presentation.controller.v1.PersonenController.*(..))")
     public void personenControllerMethod() {}
+
+    @Pointcut("@within(de.fi.webapp.aspects.Dozent)")
+    public void dozentMethodes(){}
 }

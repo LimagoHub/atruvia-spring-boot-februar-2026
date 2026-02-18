@@ -16,7 +16,7 @@ public class MyAspect {
 
 
 
-    @Before("Pointcuts.personenControllerMethod()")
+    @Before("Pointcuts.dozentMethodes()")
     public void beforeAdvice(JoinPoint joinPoint) {
         log.warn("before advice. Methode = " + joinPoint.getSignature().getName());
     }

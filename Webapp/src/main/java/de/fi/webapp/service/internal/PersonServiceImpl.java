@@ -1,5 +1,6 @@
 package de.fi.webapp.service.internal;
 
+import de.fi.webapp.aspects.Dozent;
 import de.fi.webapp.persistence.repository.PersonRepository;
 import de.fi.webapp.service.BlacklistService;
 import de.fi.webapp.service.PersonService;
@@ -16,15 +17,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-//@Service
+@Dozent
+@Service
 @RequiredArgsConstructor
-//@Transactional(rollbackFor = PersonenServiceException.class,propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
+@Transactional(rollbackFor = PersonenServiceException.class,propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
 public class PersonServiceImpl implements PersonService {
 
     private final PersonRepository personRepository;
     private final PersonMapper personMapper;
-    //@Qualifier("antipathen")
+    @Qualifier("antipathen")
     private final List<String> antipathen;
 
     /*

@@ -38,14 +38,17 @@ public class PersonConfig {
         return List.of("Cherry","Apple","Strawberry","Banana");
     }
 
+    /*
     @Bean
     public PersonService createPersoneService(final PersonRepository repo, final PersonMapper mapper, @Qualifier("antipathen") final List<String> antipathen) {
         return new PersonServiceImpl(repo, mapper, antipathen);
     }
-
-
+    */
+    /*
     @Bean
     public Set<String> createSet(){
         return Set.of("A","B","C");
     }
+
+     */
 }
